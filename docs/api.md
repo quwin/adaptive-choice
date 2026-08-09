@@ -98,29 +98,41 @@ class Sampler(Protocol):
 must be approximately 1. `sample` returns a zero-based index. The runner validates
 both operations for custom samplers before stepping the environment.
 
-### `AgentUpdater[AgentStateT, ObservationT, ActionT, OutcomeT]`
+### `AgentUpdater[AgentStateT, ExperienceT]`
 
 ```python
-class AgentUpdater(
-    Protocol[AgentStateT, ObservationT, ActionT, OutcomeT]
-):
+class AgentUpdater(Protocol[AgentStateT, ExperienceT]):
     def update(
         self,
         agent: AgentStateT,
-        observation: ObservationT,
-        action: ActionT,
-        outcome: OutcomeT,
+        experience: ExperienceT,
     ) -> AgentStateT: ...
 ```
 
-The agent type is invariant because it is both input and output. Observation,
-action, and outcome are contravariant inputs.
+The agent type is invariant because it is both input and output. Experience is a
+contravariant input. Applications choose the experience type: it may be
+`DecisionExperience`, an observed event, received information, or a union/base
+type spanning several perceived experiences.
 
 ## Result types
 
-Result records live in `adaptive_choice.types`. Both are frozen, slotted data
+Result records live in `adaptive_choice.types`. They are frozen, slotted data
 classes: attributes cannot be reassigned and instances have value-based equality.
 Contained domain objects are not deep-copied or made immutable.
+
+### `DecisionExperience[ObservationT, ActionT, OutcomeT]`
+
+```python
+@dataclass(frozen=True, slots=True)
+class DecisionExperience(Generic[ObservationT, ActionT, OutcomeT]):
+    observation: ObservationT
+    action: ActionT
+    outcome: OutcomeT
+```
+
+The canonical perceived experience created by `simulate_step`. Applications may
+define other experience types for events and information received outside an
+agent's own action cycle.
 
 ### `Choice[ActionT]`
 
@@ -147,10 +159,16 @@ class StepResult(Generic[ObservationT, ActionT, OutcomeT, AgentStateT]):
     choice: Choice[ActionT]
     outcome: OutcomeT
     agent: AgentStateT
+
+    @property
+    def experience(
+        self,
+    ) -> DecisionExperience[ObservationT, ActionT, OutcomeT]: ...
 ```
 
 `agent` is the value returned by `AgentUpdater.update`, not necessarily the same
-object passed into the step.
+object passed into the step. `experience` reconstructs the canonical experience
+from the result's observation, selected action, and outcome.
 
 ## Built-in samplers
 
@@ -219,7 +237,10 @@ def simulate_step(
     observer: Observer[StateT, AgentStateT, ObservationT],
     choice_model: ChoiceModel[ObservationT, AgentStateT, ActionT],
     sampler: Sampler,
-    updater: AgentUpdater[AgentStateT, ObservationT, ActionT, OutcomeT],
+    updater: AgentUpdater[
+        AgentStateT,
+        DecisionExperience[ObservationT, ActionT, OutcomeT],
+    ],
     rng: RandomGenerator,
 ) -> StepResult[ObservationT, ActionT, OutcomeT, AgentStateT]: ...
 ```
@@ -227,7 +248,8 @@ def simulate_step(
 Runs one observe, candidate generation, scoring, distribution, sampling,
 environment step, and agent update cycle. Arguments may be positional or keyword.
 Candidate actions, logits, and probabilities are materialized before action
-execution.
+execution. After action execution, the runner creates `DecisionExperience` and
+passes it to the updater.
 
 Raises:
 
@@ -251,7 +273,10 @@ class DecisionSystem(
     observer: Observer[StateT, AgentStateT, ObservationT]
     choice_model: ChoiceModel[ObservationT, AgentStateT, ActionT]
     sampler: Sampler
-    updater: AgentUpdater[AgentStateT, ObservationT, ActionT, OutcomeT]
+    updater: AgentUpdater[
+        AgentStateT,
+        DecisionExperience[ObservationT, ActionT, OutcomeT],
+    ]
 
     def step(
         self,

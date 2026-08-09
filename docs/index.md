@@ -42,6 +42,11 @@ outcome. Adaptive Choice gives each concern one boundary:
 | How are utilities converted into behavior? | `Sampler` |
 | How does experience change the agent? | `AgentUpdater` |
 
+An updater consumes an application-defined perceived experience, not only the
+outcome of an action the agent initiated. Decision steps create a typed
+`DecisionExperience`; applications may also update agents from observed events
+or received information.
+
 The orchestration layer performs no domain reasoning. As a result, a hand-written
 scorer can be exchanged for a learned model, or stochastic softmax selection for
 argmax selection, without changing environment mechanics.

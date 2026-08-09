@@ -50,7 +50,7 @@ from dataclasses import dataclass, replace
 from random import Random
 from typing import Sequence
 
-from adaptive_choice import DecisionSystem, SoftmaxSampler
+from adaptive_choice import DecisionExperience, DecisionSystem, SoftmaxSampler
 
 
 @dataclass(frozen=True)
@@ -114,11 +114,9 @@ class MealUpdater:
     def update(
         self,
         agent: Agent,
-        observation: tuple[str, ...],
-        action: Action,
-        outcome: float,
+        experience: DecisionExperience[tuple[str, ...], Action, float],
     ) -> Agent:
-        del observation, action, outcome
+        del experience
         return replace(agent, meals=agent.meals + 1)
 
 
@@ -172,7 +170,7 @@ The canonical step is:
 
 ```text
 world state -> observation -> legal actions -> logits -> probabilities
-            -> sampled action -> outcome -> updated agent
+            -> sampled action -> outcome -> decision experience -> updated agent
 ```
 
 Responsibility is deliberately split:
@@ -188,6 +186,11 @@ Responsibility is deliberately split:
 This separation supports imperfect information, changing candidate sets,
 hand-written or learned utility models, and individualized state with shared
 model parameters.
+
+`AgentUpdater` is not limited to self-caused outcomes. Its second generic type is
+an application-defined perceived experience, so the same boundary can adapt an
+agent from `DecisionExperience`, observed events, received information, or a
+union of those values.
 
 ## Guarantees and constraints
 

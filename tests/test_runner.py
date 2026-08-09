@@ -9,6 +9,7 @@ from dataclasses import FrozenInstanceError
 from adaptive_choice import (
     ActionCountMismatch,
     ArgmaxSampler,
+    DecisionExperience,
     DecisionSystem,
     InvalidChoiceIndex,
     InvalidLogits,
@@ -103,12 +104,10 @@ class RecordingUpdater:
     def update(
         self,
         agent: object,
-        observation: object,
-        action: object,
-        outcome: object,
+        experience: object,
     ) -> object:
         self.trace.append("updater.update")
-        self.arguments = (agent, observation, action, outcome)
+        self.arguments = (agent, experience)
         return self.updated_agent
 
 
@@ -192,10 +191,12 @@ class RunnerTests(unittest.TestCase):
         self.assertEqual(sampler.probability_logits, (0.0, 1.0))
         self.assertEqual(sampler.sample_arguments, ((0.0, 1.0), rng))
         self.assertEqual(environment.action_seen, "explore")
-        self.assertEqual(
-            updater.arguments,
-            (agent, observer.observation, "explore", environment.outcome),
-        )
+        updater_agent, experience = updater.arguments
+        self.assertIs(updater_agent, agent)
+        self.assertIsInstance(experience, DecisionExperience)
+        self.assertIs(experience.observation, observer.observation)
+        self.assertEqual(experience.action, "explore")
+        self.assertIs(experience.outcome, environment.outcome)
         self.assertIs(result.observation, observer.observation)
         self.assertEqual(result.choice.action, "explore")
         self.assertEqual(result.choice.index, 1)
@@ -203,6 +204,7 @@ class RunnerTests(unittest.TestCase):
         self.assertEqual(result.choice.probabilities, (0.25, 0.75))
         self.assertIs(result.outcome, environment.outcome)
         self.assertIs(result.agent, updater.updated_agent)
+        self.assertEqual(result.experience, experience)
 
     def test_actions_logits_and_probabilities_are_snapshotted(self) -> None:
         actions = ["stay", "explore"]
@@ -428,9 +430,7 @@ class FailureBoundaryTests(unittest.TestCase):
             def update(
                 self,
                 agent: object,
-                observation: object,
-                action: object,
-                outcome: object,
+                experience: object,
             ) -> object:
                 self.trace.append("updater.update")
                 raise RuntimeError("update failure")

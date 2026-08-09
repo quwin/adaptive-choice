@@ -7,7 +7,7 @@ import unittest
 from dataclasses import dataclass
 from itertools import pairwise
 
-from adaptive_choice import DecisionSystem, SoftmaxSampler
+from adaptive_choice import DecisionExperience, DecisionSystem, SoftmaxSampler
 
 
 @dataclass(frozen=True)
@@ -91,13 +91,17 @@ class CounterUpdater:
     def update(
         self,
         agent: CounterAgent,
-        observation: CounterObservation,
-        action: CounterAction,
-        outcome: CounterOutcome,
+        experience: DecisionExperience[
+            CounterObservation,
+            CounterAction,
+            CounterOutcome,
+        ],
     ) -> CounterAgent:
-        del observation
-        learned_preference = agent.preference + 0.15 * outcome.change
-        return CounterAgent(learned_preference, agent.history + (action.name,))
+        learned_preference = agent.preference + 0.15 * experience.outcome.change
+        return CounterAgent(
+            learned_preference,
+            agent.history + (experience.action.name,),
+        )
 
 
 def run_counter_trajectory(seed: int, steps: int = 8) -> tuple[object, ...]:

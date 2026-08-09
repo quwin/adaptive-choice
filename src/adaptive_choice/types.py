@@ -12,6 +12,15 @@ OutcomeT = TypeVar("OutcomeT")
 
 
 @dataclass(frozen=True, slots=True)
+class DecisionExperience(Generic[ObservationT, ActionT, OutcomeT]):
+    """What an agent perceived, did, and received during one decision."""
+
+    observation: ObservationT
+    action: ActionT
+    outcome: OutcomeT
+
+
+@dataclass(frozen=True, slots=True)
 class Choice(Generic[ActionT]):
     """A selected action together with its complete decision distribution.
 
@@ -35,5 +44,15 @@ class StepResult(Generic[ObservationT, ActionT, OutcomeT, AgentStateT]):
     outcome: OutcomeT
     agent: AgentStateT
 
+    @property
+    def experience(self) -> DecisionExperience[ObservationT, ActionT, OutcomeT]:
+        """Return this step's canonical experience value."""
 
-__all__ = ["Choice", "StepResult"]
+        return DecisionExperience(
+            observation=self.observation,
+            action=self.choice.action,
+            outcome=self.outcome,
+        )
+
+
+__all__ = ["Choice", "DecisionExperience", "StepResult"]

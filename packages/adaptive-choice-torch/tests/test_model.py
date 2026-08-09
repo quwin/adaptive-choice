@@ -6,7 +6,12 @@ import unittest
 from dataclasses import dataclass
 
 import torch
-from adaptive_choice import ArgmaxSampler, ChoiceModel, DecisionSystem
+from adaptive_choice import (
+    ArgmaxSampler,
+    ChoiceModel,
+    DecisionExperience,
+    DecisionSystem,
+)
 from torch import Tensor
 
 from adaptive_choice_torch import (
@@ -53,11 +58,9 @@ class IdentityUpdater:
     def update(
         self,
         agent: float,
-        observation: float,
-        action: Action,
-        outcome: Action,
+        experience: DecisionExperience[float, Action, Action],
     ) -> float:
-        del observation, action, outcome
+        del experience
         return agent
 
 

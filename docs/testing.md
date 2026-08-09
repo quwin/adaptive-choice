@@ -97,9 +97,10 @@ compatibility is specifically part of the contract.
 
 ## Updater tests
 
-Given agent, observation, action, and outcome, assert the complete next agent.
-If agent state is intended to be immutable, also assert that the original value
-is unchanged.
+Given an agent and each supported perceived-experience type, assert the complete
+next agent. Include `DecisionExperience` plus observed-event or
+received-information values when the updater accepts them. If agent state is
+intended to be immutable, also assert that the original value is unchanged.
 
 ## Integration tests
 

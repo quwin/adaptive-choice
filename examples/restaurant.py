@@ -17,7 +17,12 @@ import random
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, replace
 
-from adaptive_choice import DecisionSystem, SoftmaxSampler, StepResult
+from adaptive_choice import (
+    DecisionExperience,
+    DecisionSystem,
+    SoftmaxSampler,
+    StepResult,
+)
 
 
 @dataclass(frozen=True, slots=True)
@@ -192,14 +197,16 @@ class ExperienceUpdater:
     def update(
         self,
         agent: Diner,
-        observation: RestaurantObservation,
-        action: EatAt,
-        outcome: DiningOutcome,
+        experience: DecisionExperience[
+            RestaurantObservation,
+            EatAt,
+            DiningOutcome,
+        ],
     ) -> Diner:
-        views = {view.name: view for view in observation.options}
-        restaurant_name = action.restaurant.name
+        views = {view.name: view for view in experience.observation.options}
+        restaurant_name = experience.action.restaurant.name
         prediction = views[restaurant_name].believed_rating
-        prediction_error = outcome.satisfaction - prediction
+        prediction_error = experience.outcome.satisfaction - prediction
         affinities = dict(agent.restaurant_affinities)
         affinities[restaurant_name] = affinities.get(restaurant_name, 0.0) + (
             agent.learning_rate * prediction_error

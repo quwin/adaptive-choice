@@ -15,6 +15,7 @@ from random import Random
 from adaptive_choice import (
     AgentUpdater,
     ChoiceModel,
+    DecisionExperience,
     DecisionSystem,
     Environment,
     Observer,
@@ -27,7 +28,7 @@ environment: Environment[int, Agent, Action, int] = Game()
 observer: Observer[int, Agent, int] = RoundObserver()
 model: ChoiceModel[int, Agent, Action] = RiskModel()
 sampler: Sampler = SoftmaxSampler()
-updater: AgentUpdater[Agent, int, Action, int] = ScoreUpdater()
+updater: AgentUpdater[Agent, DecisionExperience[int, Action, int]] = ScoreUpdater()
 rng: RandomGenerator = Random(42)
 
 system: DecisionSystem[int, int, Agent, Action, int] = DecisionSystem(

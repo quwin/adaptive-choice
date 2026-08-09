@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import random
 import unittest
+from dataclasses import dataclass
 
 import adaptive_choice
 from adaptive_choice import (
@@ -13,6 +14,7 @@ from adaptive_choice import (
     ArgmaxSampler,
     Choice,
     ChoiceModel,
+    DecisionExperience,
     DecisionSystem,
     Environment,
     InvalidChoiceIndex,
@@ -54,10 +56,43 @@ class TinyModel:
 
 
 class TinyUpdater:
-    def update(
-        self, agent: object, observation: int, action: str, outcome: str
-    ) -> object:
+    def update(self, agent: object, experience: object) -> object:
         return agent
+
+
+@dataclass(frozen=True)
+class ExperienceAgent:
+    experiences: tuple[str, ...] = ()
+
+
+@dataclass(frozen=True)
+class ObservedEvent:
+    description: str
+
+
+@dataclass(frozen=True)
+class ReceivedInformation:
+    message: str
+
+
+PerceivedExperience = (
+    DecisionExperience[int, str, str] | ObservedEvent | ReceivedInformation
+)
+
+
+class GeneralExperienceUpdater:
+    def update(
+        self,
+        agent: ExperienceAgent,
+        experience: PerceivedExperience,
+    ) -> ExperienceAgent:
+        if isinstance(experience, DecisionExperience):
+            description = f"outcome:{experience.outcome}"
+        elif isinstance(experience, ObservedEvent):
+            description = f"event:{experience.description}"
+        else:
+            description = f"information:{experience.message}"
+        return ExperienceAgent(agent.experiences + (description,))
 
 
 class PublicApiTests(unittest.TestCase):
@@ -69,6 +104,7 @@ class PublicApiTests(unittest.TestCase):
             "ArgmaxSampler",
             "Choice",
             "ChoiceModel",
+            "DecisionExperience",
             "DecisionSystem",
             "Environment",
             "InvalidChoiceIndex",
@@ -139,6 +175,27 @@ class PublicApiTests(unittest.TestCase):
     def test_standard_samplers_satisfy_sampler_protocol(self) -> None:
         self.assertIsInstance(SoftmaxSampler(), Sampler)
         self.assertIsInstance(ArgmaxSampler(), Sampler)
+
+    def test_agent_updater_accepts_any_application_perceived_experience(self) -> None:
+        updater = GeneralExperienceUpdater()
+        agent = ExperienceAgent()
+
+        experiences: tuple[PerceivedExperience, ...] = (
+            DecisionExperience(observation=1, action="act", outcome="done"),
+            ObservedEvent("another agent arrived"),
+            ReceivedInformation("the bridge is closed"),
+        )
+        for experience in experiences:
+            agent = updater.update(agent, experience)
+
+        self.assertEqual(
+            agent.experiences,
+            (
+                "outcome:done",
+                "event:another agent arrived",
+                "information:the bridge is closed",
+            ),
+        )
 
     def test_public_values_are_constructible_for_external_storage(self) -> None:
         choice = Choice(

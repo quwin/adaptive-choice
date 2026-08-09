@@ -18,9 +18,10 @@ order:
    result.
 5. `sampler.sample(logits, rng)` chooses a candidate index.
 6. `environment.step(action)` applies the selected action and returns an outcome.
-7. `updater.update(agent, observation, action, outcome)` returns the next agent
-   state.
-8. A `StepResult` captures the observation, complete `Choice`, outcome, and next
+7. A `DecisionExperience(observation, action, outcome)` captures what the agent
+   perceived, did, and received.
+8. `updater.update(agent, experience)` returns the next agent state.
+9. A `StepResult` captures the observation, complete `Choice`, outcome, and next
    agent.
 
 Validation prevents the environment from being stepped when the action set,
@@ -95,9 +96,15 @@ changed without retraining or rewriting a model. Details are in
 
 ## Agent updater
 
-The updater interprets experience. It receives the prior agent, the actual
-observation used for the decision, the selected action, and the environment's
-outcome, then returns the next agent state.
+The updater interprets any application-defined perceived experience and returns
+the next agent state. During a decision step the runner supplies a
+`DecisionExperience` containing the actual observation, selected action, and
+environment outcome.
+
+Outside the decision loop, applications may pass observed events, messages,
+directly received outcomes, or a union of experience types to an updater. This
+keeps adaptation independent from who caused an event while leaving experience
+meaning and delivery schedules in the application.
 
 It may be a pure rule, Bayesian update, state machine, learned recurrent
 transition, or identity operation. It does not modify world state; environment
@@ -106,7 +113,8 @@ mechanics have already completed.
 ## Results and observability
 
 `Choice` preserves action, index, logits, and probabilities. `StepResult`
-preserves that choice alongside the observation, outcome, and updated agent.
+preserves that choice alongside the observation, outcome, and updated agent;
+its `experience` property reconstructs the canonical `DecisionExperience`.
 These records support debugging, entropy calculations, calibration, trajectory
 collection, and external training without expanding the runtime abstraction.
 

@@ -92,6 +92,8 @@ step, then returns the next agent value.
 ```python
 from dataclasses import replace
 
+from adaptive_choice import DecisionExperience
+
 
 class RiskModel:
     def logits(
@@ -111,12 +113,9 @@ class ScoreUpdater:
     def update(
         self,
         agent: Agent,
-        observation: int,
-        action: Action,
-        outcome: int,
+        experience: DecisionExperience[int, Action, int],
     ) -> Agent:
-        del observation, action
-        return replace(agent, score=agent.score + outcome)
+        return replace(agent, score=agent.score + experience.outcome)
 ```
 
 ## 4. Compose and run

@@ -16,7 +16,7 @@ from .protocols import (
     RandomGenerator,
     Sampler,
 )
-from .types import Choice, StepResult
+from .types import Choice, DecisionExperience, StepResult
 
 StateT = TypeVar("StateT")
 ObservationT = TypeVar("ObservationT")
@@ -43,7 +43,10 @@ def simulate_step(
     observer: Observer[StateT, AgentStateT, ObservationT],
     choice_model: ChoiceModel[ObservationT, AgentStateT, ActionT],
     sampler: Sampler,
-    updater: AgentUpdater[AgentStateT, ObservationT, ActionT, OutcomeT],
+    updater: AgentUpdater[
+        AgentStateT,
+        DecisionExperience[ObservationT, ActionT, OutcomeT],
+    ],
     rng: RandomGenerator,
 ) -> StepResult[ObservationT, ActionT, OutcomeT, AgentStateT]:
     """Run exactly one observe-score-sample-step-update decision cycle.
@@ -58,7 +61,7 @@ def simulate_step(
         observer: Maps world state and agent state to visible information.
         choice_model: Produces one logit for each legal action.
         sampler: Produces probabilities and a selected action index.
-        updater: Produces the next agent state after the outcome.
+        updater: Produces the next agent state from the decision experience.
         rng: Explicit random source used by stochastic samplers.
 
     Returns:
@@ -97,7 +100,12 @@ def simulate_step(
     index = _choice_index(sampler.sample(logits, rng), action_count=len(actions))
     action = actions[index]
     outcome = environment.step(action)
-    updated_agent = updater.update(agent, observation, action, outcome)
+    experience = DecisionExperience(
+        observation=observation,
+        action=action,
+        outcome=outcome,
+    )
+    updated_agent = updater.update(agent, experience)
 
     choice = Choice(
         action=action,
@@ -122,7 +130,10 @@ class DecisionSystem(
     observer: Observer[StateT, AgentStateT, ObservationT]
     choice_model: ChoiceModel[ObservationT, AgentStateT, ActionT]
     sampler: Sampler
-    updater: AgentUpdater[AgentStateT, ObservationT, ActionT, OutcomeT]
+    updater: AgentUpdater[
+        AgentStateT,
+        DecisionExperience[ObservationT, ActionT, OutcomeT],
+    ]
 
     def step(
         self,

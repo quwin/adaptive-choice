@@ -71,5 +71,5 @@ A proposed roadmap item should answer:
 6. Can its optimized behavior be tested against scalar semantics?
 7. Does it keep domain meaning and training outside the core?
 
-Track shipped work in the repository [changelog](../CHANGELOG.md); do not infer
+Track shipped work in the repository-root `CHANGELOG.md`; do not infer
 availability from this page.

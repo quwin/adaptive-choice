@@ -11,6 +11,8 @@ and the project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- Generic `DecisionExperience` values for the observation, action, and outcome
+  produced by a decision step.
 - The separately distributed `adaptive-choice-torch` package, keeping PyTorch
   out of the core dependency graph.
 - `TorchChoiceModel` for composing application tensor encoders and scorers under
@@ -23,6 +25,9 @@ and the project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
+- `AgentUpdater` now consumes one application-typed perceived experience rather
+  than four decision-specific arguments, allowing adaptation from observed
+  events, received information, and directly experienced outcomes.
 - Package and citation versions identify the 0.2.0 release.
 - Roadmap and integration documentation now distinguish tensor batching from
   scalar environment execution.

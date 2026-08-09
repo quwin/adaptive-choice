@@ -170,26 +170,52 @@ samplers unless different behavior is necessary.
 
 ## Agent updater contract
 
-The updater converts one experience into the next agent value:
+The updater converts any application-defined perceived experience into the next
+agent value:
 
 ```python
+from dataclasses import dataclass
+
+from adaptive_choice import DecisionExperience
+
+
+@dataclass(frozen=True)
+class ObservedEvent:
+    description: str
+
+
+@dataclass(frozen=True)
+class ReceivedInformation:
+    message: str
+
+
+Experience = (
+    DecisionExperience[MyObservation, MyAction, MyOutcome]
+    | ObservedEvent
+    | ReceivedInformation
+)
+
+
 class MyUpdater:
     def update(
         self,
         agent: MyAgent,
-        observation: MyObservation,
-        action: MyAction,
-        outcome: MyOutcome,
+        experience: Experience,
     ) -> MyAgent:
         ...
 ```
+
+`DecisionSystem.step` constructs `DecisionExperience` after the environment
+returns an outcome. Applications can invoke the same updater independently when
+the agent observes an event or receives information. The core does not prescribe
+a universal experience base class, event bus, or update schedule.
 
 Return the next value even if the update is an identity operation. Avoid mutating
 the input agent before all update logic succeeds; otherwise a failed call can
 leave the application with a partially updated object.
 
-Two agents may interpret the same outcome differently. Objective mechanics
-belong in the environment; subjective adaptation belongs here.
+Two agents may interpret the same perceived experience differently. Objective
+mechanics belong in the environment; subjective adaptation belongs here.
 
 ## Explicit protocol checks
 

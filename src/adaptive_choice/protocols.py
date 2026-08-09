@@ -18,7 +18,7 @@ AgentStateT_contra = TypeVar("AgentStateT_contra", contravariant=True)
 ActionT = TypeVar("ActionT")
 ActionT_contra = TypeVar("ActionT_contra", contravariant=True)
 OutcomeT_co = TypeVar("OutcomeT_co", covariant=True)
-OutcomeT_contra = TypeVar("OutcomeT_contra", contravariant=True)
+ExperienceT_contra = TypeVar("ExperienceT_contra", contravariant=True)
 
 
 @runtime_checkable
@@ -99,23 +99,16 @@ class Sampler(Protocol):
 
 @runtime_checkable
 class AgentUpdater(
-    Protocol[
-        AgentStateT,
-        ObservationT_contra,
-        ActionT_contra,
-        OutcomeT_contra,
-    ]
+    Protocol[AgentStateT, ExperienceT_contra]
 ):
-    """Produce the next agent state from one decision experience."""
+    """Produce the next agent state from any perceived experience."""
 
     def update(
         self,
         agent: AgentStateT,
-        observation: ObservationT_contra,
-        action: ActionT_contra,
-        outcome: OutcomeT_contra,
+        experience: ExperienceT_contra,
     ) -> AgentStateT:
-        """Return the agent state that follows this experience."""
+        """Return the agent state that follows ``experience``."""
         ...
 
 

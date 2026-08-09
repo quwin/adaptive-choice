@@ -23,7 +23,7 @@ from .protocols import (
 )
 from .runner import DecisionSystem, simulate_step
 from .sampling import ArgmaxSampler, SoftmaxSampler
-from .types import Choice, StepResult
+from .types import Choice, DecisionExperience, StepResult
 
 __version__ = "0.2.0"
 
@@ -34,6 +34,7 @@ __all__ = [
     "ArgmaxSampler",
     "Choice",
     "ChoiceModel",
+    "DecisionExperience",
     "DecisionSystem",
     "Environment",
     "InvalidChoiceIndex",
