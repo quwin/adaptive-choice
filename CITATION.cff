@@ -1,0 +1,16 @@
+cff-version: 1.2.0
+message: "If you use Adaptive Choice in research, please cite the software."
+title: "Adaptive Choice"
+type: software
+version: 0.1.0
+license: MIT
+abstract: >-
+  A minimal Python interoperability layer for adaptive, stochastic,
+  preference-conditioned decision-making in structured simulations.
+authors:
+  - name: "Adaptive Choice contributors"
+keywords:
+  - simulation
+  - decision-making
+  - stochastic choice
+  - adaptive agents

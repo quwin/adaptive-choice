@@ -1,0 +1,32 @@
+site_name: Adaptive Choice
+site_description: Adaptive stochastic decision-making for structured simulations
+docs_dir: docs
+site_dir: site
+use_directory_urls: true
+
+theme:
+  name: mkdocs
+
+nav:
+  - Home: index.md
+  - Getting started: getting-started.md
+  - Concepts and architecture: concepts.md
+  - API reference: api.md
+  - Guides:
+      - Custom components: custom-components.md
+      - Sampling and numerical behavior: sampling.md
+      - Reproducibility: reproducibility.md
+      - Errors and validation: errors.md
+      - Testing: testing.md
+      - Integration and typing: integration.md
+  - Design boundaries: design-boundaries.md
+  - FAQ: faq.md
+  - Roadmap: roadmap.md
+
+markdown_extensions:
+  - admonition
+  - tables
+  - toc:
+      permalink: true
+
+strict: true
