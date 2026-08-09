@@ -50,7 +50,7 @@ Generate a deterministic order when replayability matters.
 ## Can I use NumPy, PyTorch, or JAX?
 
 Yes, behind custom components. Convert final scalar logits to a flat host-side
-sequence. The v0.1 core does not import these frameworks or retain gradients,
+sequence. The core does not import these frameworks or retain gradients,
 dtypes, or devices. See [Integration and typing](integration.md).
 
 ## Can temperature depend on the agent or context?
@@ -94,7 +94,7 @@ core dependencies.
 
 ## Does the core support batching or multi-agent execution?
 
-Version 0.1 provides canonical scalar semantics. Applications can run multiple
+The core provides canonical scalar semantics. Applications can run multiple
 agents with a shared `DecisionSystem` and distinct agent states. Optimized masked
 batch adapters are potential future work and must preserve scalar semantics.
 

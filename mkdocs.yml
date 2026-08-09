@@ -19,6 +19,7 @@ nav:
       - Errors and validation: errors.md
       - Testing: testing.md
       - Integration and typing: integration.md
+      - PyTorch adapter: torch-adapter.md
   - Design boundaries: design-boundaries.md
   - FAQ: faq.md
   - Roadmap: roadmap.md

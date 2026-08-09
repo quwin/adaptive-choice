@@ -18,7 +18,6 @@ from .protocols import (
 )
 from .types import Choice, StepResult
 
-
 StateT = TypeVar("StateT")
 ObservationT = TypeVar("ObservationT")
 AgentStateT = TypeVar("AgentStateT")

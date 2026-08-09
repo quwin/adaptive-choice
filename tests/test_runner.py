@@ -6,8 +6,6 @@ import math
 import unittest
 from dataclasses import FrozenInstanceError
 
-from tests._support import NeverRandom, SequenceRandom
-
 from adaptive_choice import (
     ActionCountMismatch,
     ArgmaxSampler,
@@ -18,6 +16,7 @@ from adaptive_choice import (
     NoLegalActions,
     simulate_step,
 )
+from tests._support import NeverRandom
 
 
 class RecordingEnvironment:

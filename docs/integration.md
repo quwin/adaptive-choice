@@ -93,9 +93,13 @@ and model-mode ownership remain in the adapter. Runtime result tuples do not
 retain a computation graph. If training requires original tensors, record them
 in a training-specific trajectory outside `StepResult`.
 
+For PyTorch, the separately installed `adaptive-choice-torch` package provides
+this boundary directly. See the [PyTorch adapter guide](torch-adapter.md).
+
 For padded batches with shapes such as `[batch, max_candidates, features]`, mask
 padded logits inside the adapter and expose each real candidate sequence with the
-same scalar ordering. Version 0.1 does not define a batch API.
+same scalar ordering. Version 0.2 does not define a core batch-execution API; the
+optional PyTorch adapter provides mask-preserving tensor batching helpers.
 
 ## Adapting RNGs
 
@@ -145,7 +149,7 @@ object is a `StepResult`.
 
 ## Async and service boundaries
 
-The v0.1 runtime is synchronous. Async applications can call it directly when
+The core runtime is synchronous. Async applications can call it directly when
 components are CPU-local and non-blocking, or place blocking model/environment
 operations behind their own scheduling boundary. Do not split a stateful step
 across concurrent tasks without defining environment consistency and rollback.

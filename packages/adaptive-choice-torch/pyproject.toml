@@ -3,17 +3,16 @@ requires = ["setuptools>=68"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "adaptive-choice"
+name = "adaptive-choice-torch"
 version = "0.2.0"
-description = "A small decision kernel for adaptive, stochastic choice in structured simulations"
+description = "Optional PyTorch adapters for Adaptive Choice"
 readme = { file = "README.md", content-type = "text/markdown" }
 requires-python = ">=3.10"
 license = "MIT"
 keywords = [
     "agent-based simulation",
-    "decision making",
     "dynamic action spaces",
-    "simulation",
+    "pytorch",
     "stochastic choice",
 ]
 classifiers = [
@@ -30,16 +29,16 @@ classifiers = [
     "Topic :: Scientific/Engineering",
     "Typing :: Typed",
 ]
-dependencies = []
+dependencies = [
+    "adaptive-choice>=0.2.0,<0.3",
+    "torch>=2.2",
+]
 
 [project.optional-dependencies]
 dev = [
     "build>=1.2",
     "mypy>=1.10",
     "ruff>=0.5",
-]
-docs = [
-    "mkdocs>=1.6",
 ]
 
 [tool.setuptools]
@@ -50,13 +49,13 @@ include-package-data = true
 where = ["src"]
 
 [tool.setuptools.package-data]
-adaptive_choice = ["py.typed"]
+adaptive_choice_torch = ["py.typed"]
 
 [tool.mypy]
 python_version = "3.10"
 strict = true
-packages = ["adaptive_choice"]
-mypy_path = "src"
+packages = ["adaptive_choice_torch"]
+mypy_path = ["src", "../../src"]
 
 [tool.ruff]
 target-version = "py310"

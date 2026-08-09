@@ -6,7 +6,8 @@ Security fixes are provided for the latest released minor version.
 
 | Version | Supported |
 | --- | --- |
-| 0.1.x | Yes |
+| 0.2.x | Yes |
+| 0.1.x | No |
 | Earlier or unreleased versions | No |
 
 Pre-1.0 releases may contain breaking API changes, but security fixes will be

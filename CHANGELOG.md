@@ -7,6 +7,28 @@ and the project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-08-09
+
+### Added
+
+- The separately distributed `adaptive-choice-torch` package, keeping PyTorch
+  out of the core dependency graph.
+- `TorchChoiceModel` for composing application tensor encoders and scorers under
+  the existing scalar `ChoiceModel` contract.
+- `DotProductScorer` and `MLPScorer` tensor modules.
+- Mask-preserving candidate padding and logit unpadding utilities for dynamic
+  candidate batches.
+- Tensor validation and documentation covering shapes, ordering, devices,
+  dtypes, gradients, model mode, and padded candidates.
+
+### Changed
+
+- Package and citation versions identify the 0.2.0 release.
+- Roadmap and integration documentation now distinguish tensor batching from
+  scalar environment execution.
+
+## [0.1.0] - 2026-08-09
+
 ### Added
 
 - Runtime-checkable protocols for environments, observers, choice models,
@@ -26,8 +48,3 @@ and the project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   build backends.
 - Source distributions include the documentation, example, test support files,
   citation metadata, and contributor guidance needed for a complete checkout.
-
-### Planned
-
-- Gather evidence for optional framework adapters and batched execution without
-  expanding the core runtime contract prematurely.

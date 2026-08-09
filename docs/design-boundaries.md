@@ -21,6 +21,8 @@ training and evaluation consume results; the core does not import them
 The core depends only on Python's standard library. Applications may place
 NumPy, PyTorch, JAX, database, service, or distributed-systems code behind the
 protocols without passing those dependencies to every Adaptive Choice user.
+The official PyTorch integration follows this rule as the separate
+`adaptive-choice-torch` distribution.
 
 ## Core responsibilities
 

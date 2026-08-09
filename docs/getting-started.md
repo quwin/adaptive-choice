@@ -19,7 +19,7 @@ will be:
 python -m pip install adaptive-choice
 ```
 
-Do not assume that command is available before publication. Adaptive Choice 0.1
+Do not assume that command is available before publication. Adaptive Choice 0.2
 has no mandatory third-party runtime dependencies and requires Python 3.10 or
 newer.
 

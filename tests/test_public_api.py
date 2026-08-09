@@ -89,8 +89,8 @@ class PublicApiTests(unittest.TestCase):
         for name in expected:
             self.assertTrue(hasattr(adaptive_choice, name), name)
 
-    def test_version_identifies_the_v0_1_release(self) -> None:
-        self.assertRegex(adaptive_choice.__version__, r"^0\.1\.\d+$")
+    def test_version_identifies_the_v0_2_release(self) -> None:
+        self.assertRegex(adaptive_choice.__version__, r"^0\.2\.\d+$")
 
     def test_domain_errors_share_a_single_public_base_class(self) -> None:
         error_types = (

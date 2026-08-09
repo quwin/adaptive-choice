@@ -20,7 +20,9 @@ machine-learning or numerical-computing dependencies.
   step.
 - Read [Concepts and architecture](concepts.md) for component responsibilities
   and data flow.
-- Use the [API reference](api.md) for every public symbol in version 0.1.0.
+- Use the [API reference](api.md) for every public core symbol in version 0.2.0.
+- Read the [PyTorch adapter guide](torch-adapter.md) for optional tensor models
+  and dynamic candidate batching.
 - Consult [Sampling and numerical behavior](sampling.md) before selecting a
   temperature or supplying custom logits.
 - Use [Custom components](custom-components.md) to integrate a domain model.
@@ -44,10 +46,12 @@ The orchestration layer performs no domain reasoning. As a result, a hand-writte
 scorer can be exchanged for a learned model, or stochastic softmax selection for
 argmax selection, without changing environment mechanics.
 
-## Version 0.1 scope
+## Version 0.2 scope
 
-Version 0.1.0 includes the scalar runtime contract, explicit RNG handling,
+Version 0.2.0 preserves the scalar runtime contract, explicit RNG handling,
 softmax and argmax samplers, immutable results, and domain-independent
-validation. It deliberately excludes training, framework adapters, batching,
-and a prescribed model of memory or preference. See [Design boundaries](design-boundaries.md)
-and the evidence-driven [Roadmap](roadmap.md).
+validation. The separate `adaptive-choice-torch` distribution adds a tensor
+choice-model adapter, reusable scorers, and mask-preserving batching helpers.
+Training and domain schemas remain outside both packages. See
+[Design boundaries](design-boundaries.md) and the evidence-driven
+[Roadmap](roadmap.md).

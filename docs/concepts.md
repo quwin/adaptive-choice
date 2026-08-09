@@ -116,7 +116,7 @@ application's trajectory schema.
 
 ## Scalar semantics first
 
-The v0.1 API executes one agent and one dynamic candidate set at a time. Future
+The core API executes one agent and one dynamic candidate set at a time. Future
 batch implementations must preserve the same ordering, validation, selection,
 and update semantics. Padding and masks are adapter implementation details, not
 different behavioral rules.

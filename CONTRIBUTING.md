@@ -42,6 +42,13 @@ python -m ruff check .
 python -m mypy src
 ```
 
+Run the separately installed PyTorch adapter suite when changing that package:
+
+```bash
+PYTHONPATH=src:packages/adaptive-choice-torch/src \
+  python -m unittest discover -s packages/adaptive-choice-torch/tests -v
+```
+
 Build and inspect distributions before submitting packaging changes:
 
 ```bash

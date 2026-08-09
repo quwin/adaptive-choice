@@ -1,6 +1,6 @@
 # API reference
 
-This page documents every public symbol in Adaptive Choice 0.1.0. All are
+This page documents every public core symbol in Adaptive Choice 0.2.0. All are
 importable from the package root:
 
 ```python
@@ -8,7 +8,9 @@ from adaptive_choice import DecisionSystem, SoftmaxSampler, simulate_step
 ```
 
 Module paths are included for readers maintaining precise imports, but the root
-imports are the supported convenience API.
+imports are the supported convenience API. The separately installed
+`adaptive_choice_torch` surface is documented in the
+[PyTorch adapter guide](torch-adapter.md).
 
 ## Protocols
 
@@ -328,7 +330,7 @@ More recovery guidance is in [Errors and validation](errors.md).
 ```python
 from adaptive_choice import __version__
 
-assert __version__ == "0.1.0"
+assert __version__ == "0.2.0"
 ```
 
 A PEP 440-compatible package version string. For installed distribution metadata,

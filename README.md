@@ -9,9 +9,10 @@ selects an action, executes it in the environment, and updates the agent. The
 library coordinates that boundary without owning your world model, action
 schema, learning algorithm, or simulation loop.
 
-Version 0.1.0 is intentionally dependency-free and framework-independent. It
+The 0.2 core remains dependency-free and framework-independent. It
 provides protocols, result records, robust sampling, validation, and one-step
-orchestration—not a simulation engine or reinforcement-learning framework.
+orchestration. PyTorch support ships as a separate optional distribution rather
+than becoming a core dependency.
 
 ## Install
 
@@ -24,6 +25,18 @@ python -m pip install -e .
 After the project is published to a package index, the intended release command
 is `python -m pip install adaptive-choice`. Do not assume an unpublished package
 name resolves to this source tree.
+
+Install the optional PyTorch adapter separately:
+
+```bash
+python -m pip install adaptive-choice-torch
+```
+
+From this checkout, install both distributions in editable mode:
+
+```bash
+python -m pip install -e . -e ./packages/adaptive-choice-torch
+```
 
 ## Quick start
 
@@ -135,6 +148,24 @@ the updater; Adaptive Choice does not mutate agent state itself.
 For a deterministic policy, substitute `ArgmaxSampler()`. For lower-level
 composition, call `simulate_step(...)` directly.
 
+## Optional PyTorch models
+
+`adaptive-choice-torch` adapts tensor encoders and scorers to the same scalar
+`ChoiceModel` contract:
+
+```python
+from adaptive_choice_torch import DotProductScorer, TorchChoiceModel
+
+torch_model = TorchChoiceModel(
+    context_encoder=encode_observation_and_agent,
+    action_encoder=encode_actions_in_order,
+    scorer=DotProductScorer(),
+)
+```
+
+The adapter also includes an MLP scorer and mask-preserving helpers for padded
+candidate tensors. See the [PyTorch adapter guide](docs/torch-adapter.md).
+
 ## The decision boundary
 
 The canonical step is:
@@ -187,10 +218,9 @@ model parameters.
 
 ## Project status
 
-The 0.1 series validates the minimal scalar runtime contract. Public APIs may
-evolve before 1.0, with changes documented in [CHANGELOG.md](CHANGELOG.md).
-Framework adapters, batching, and training integrations remain outside the 0.1
-core until concrete use cases establish their contracts.
+Version 0.2 preserves the scalar core contract and adds the separately packaged
+PyTorch adapter. Public APIs may evolve before 1.0, with changes documented in
+[CHANGELOG.md](CHANGELOG.md). Training systems remain downstream of the runtime.
 
 ## Contributing and security
 

@@ -9,7 +9,6 @@ from __future__ import annotations
 from collections.abc import Sequence
 from typing import Protocol, TypeVar, runtime_checkable
 
-
 StateT_co = TypeVar("StateT_co", covariant=True)
 StateT_contra = TypeVar("StateT_contra", contravariant=True)
 ObservationT_co = TypeVar("ObservationT_co", covariant=True)

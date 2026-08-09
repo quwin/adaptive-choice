@@ -1,9 +1,9 @@
 # Roadmap
 
-The roadmap is evidence-driven. Items beyond 0.1 describe possible directions,
-not promised APIs or release dates. New abstractions should be supported by at
-least two concrete implementations and must preserve the boundaries in
-[Design boundaries](design-boundaries.md).
+The roadmap is evidence-driven. Items beyond the current release describe
+possible directions, not promised APIs or release dates. New abstractions should
+be supported by at least two concrete implementations and must preserve the
+boundaries in [Design boundaries](design-boundaries.md).
 
 ## 0.1: minimal runtime
 
@@ -19,19 +19,21 @@ Version 0.1.0 establishes:
 
 The release deliberately contains no trainable preference model.
 
-## Candidate 0.2 themes
+## 0.2: optional PyTorch integration
 
-Framework adapters may be considered after real integrations establish useful
-contracts:
+Version 0.2 preserves the dependency-free scalar core and adds the separately
+distributed `adaptive-choice-torch` package:
 
-- optional PyTorch adapter package;
-- dynamic candidate batching with masks;
-- context and action encoder interfaces;
-- dot-product and MLP scorer examples;
-- conversion and typing guidance for tensors.
+- `TorchChoiceModel` composes application context/action encoders with a tensor
+  scorer;
+- `DotProductScorer` and `MLPScorer` provide candidate-local scoring blocks;
+- dynamic candidate padding retains an authoritative boolean mask and original
+  row ordering;
+- scalar conversion validates shape and finiteness before detaching logits;
+- model mode, devices, dtypes, and training remain application-owned.
 
-Acceptance requires optional dependencies, parity tests against scalar semantics,
-and clear ownership of devices, dtypes, gradients, and padded candidates.
+Batching covers tensor scoring, not environment execution. Scalar orchestration
+remains the reference semantics.
 
 ## Candidate 0.3 themes
 
@@ -53,7 +55,7 @@ interaction, probabilistic preference state, hierarchical memory, shared models
 across large agent populations, RL environment bridges, and rare semantic
 fallbacks implemented by external systems.
 
-None requires expanding the v0.1 agent schema or changing the core ownership
+None requires expanding the core agent schema or changing its ownership
 model. In particular, individuality should normally live in agent state rather
 than one model instance per agent.
 

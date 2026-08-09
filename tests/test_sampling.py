@@ -6,14 +6,13 @@ import math
 import random
 import unittest
 
-from tests._support import NeverRandom, SequenceRandom
-
 from adaptive_choice import (
     ArgmaxSampler,
     InvalidLogits,
     InvalidRandomValue,
     SoftmaxSampler,
 )
+from tests._support import NeverRandom, SequenceRandom
 
 
 class SoftmaxSamplerTests(unittest.TestCase):

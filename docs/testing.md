@@ -7,7 +7,7 @@ composition.
 The repository uses `unittest`:
 
 ```bash
-PYTHONPATH=src python -m unittest discover -s tests -v
+python -m unittest discover -s tests -v
 ```
 
 ## Environment tests
